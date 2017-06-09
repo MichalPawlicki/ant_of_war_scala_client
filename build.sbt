@@ -11,5 +11,6 @@ lazy val root = (project in file("."))
     name := "scala-client",
     version := "1.0",
     scalaVersion := "2.12.2",
-    libraryDependencies ++= dependencies
+    libraryDependencies ++= dependencies,
+    cancelable in Global := true
   )

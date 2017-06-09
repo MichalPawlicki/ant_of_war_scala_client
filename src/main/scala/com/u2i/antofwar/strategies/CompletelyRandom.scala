@@ -5,8 +5,8 @@ import com.u2i.antofwar.model.{Ant, Move}
 
 import scala.util.Random
 
-class CompletelyRandom(playerId: Int, boardWidth: Int, boardHeight: Int) extends Strategy {
-  override def moves(board: Seq[Int], yourAnts: Seq[Ant]): Seq[Move] = yourAnts.map { ant =>
+class CompletelyRandom(boardWidth: Int, boardHeight: Int) extends Strategy {
+  override def moves(myPlayerId: Int, board: Seq[Int], yourAnts: Seq[Ant]): Seq[Move] = yourAnts.map { ant =>
     val newX = normalize(ant.x + Random.nextInt(3) - 1, 0, boardWidth - 1)
     val newY = normalize(ant.y + Random.nextInt(3) - 1, 0, boardHeight - 1)
     Move(ant.id, (newX, newY))

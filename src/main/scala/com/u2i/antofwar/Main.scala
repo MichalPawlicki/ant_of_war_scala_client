@@ -15,8 +15,8 @@ import scala.concurrent.Future
 import scala.util.Try
 
 object Main extends App {
-  val playerId = args(0).toInt
-  val strategyName = args(1)
+  var playerId: Int = 0
+  val strategyName = args(0)
   println(s"PLAYER ID: $playerId")
 
   implicit val system = ActorSystem()
@@ -29,8 +29,8 @@ object Main extends App {
   import system.dispatcher
 
   val strategy = strategyName match {
-    case "random" => new CompletelyRandom(playerId, 40, 40)
-    case "notOwn" => new GoToNotOwn(playerId, 40, 40)
+    case "random" => new CompletelyRandom(40, 40)
+    case "notOwn" => new GoToNotOwn(40, 40)
     case _ => throw new IllegalArgumentException(s"Wrong strategy name: $strategyName")
   }
 
@@ -67,23 +67,27 @@ object Main extends App {
     Flow[Try[PhoenixMessage]]
       .mapConcat(_.toOption.toList)
       .mapConcat {
+        case PhoenixMessage(`topic`, "hello_message", _, payload) =>
+          playerId = (payload \ "body" \ "player_id").extract[Int]
+          println(s"Player id set to: $playerId")
+          List()
         case PhoenixMessage(`topic`, "board_state", _, payload) =>
           val game = payload \ "game"
           (game \ "next_player").extract[Int] match {
-            case `playerId` =>
+            case x if x == playerId =>
               val ants = (payload \ "ants").extract[Seq[Ant]]
               val board = (payload \ "board").extract[Seq[Int]]
               val myAnts = ants.filter(_.player == playerId)
               val moveActionJsons =
                 strategy
-                  .moves(board, myAnts)
+                  .moves(playerId, board, myAnts)
                   .map { move =>
                     ("cmd" -> "move") ~ ("id" -> move.id) ~ ("to" -> Seq(move.to._1, move.to._2))
                   }
               val spawnActionJson = ("cmd" -> "spawn") ~ ("player_id" -> playerId)
               val actionJsons = moveActionJsons :+ spawnActionJson
               List(PhoenixMessage(
-                topic = "observer:lobby",
+                topic = topic,
                 event = "user_command",
                 ref = None,
                 payload = actionJsons
@@ -108,6 +112,7 @@ object Main extends App {
   // and closed is a Future[Done] representing the stream completion from above
   val (upgradeResponse, terminationFuture) =
   Http().singleWebSocketRequest(WebSocketRequest("ws://localhost:4000/socket/websocket"), flow)
+  //  Http().singleWebSocketRequest(WebSocketRequest("ws://10.94.2.207:4000/socket/websocket"), flow)
 
   val connected = upgradeResponse.map { upgrade =>
     // just like a regular http request we can access response status which is available via upgrade.response.status

@@ -5,15 +5,15 @@ import com.u2i.antofwar.model.{Ant, Move}
 
 import scala.util.Random
 
-class GoToNotOwn(playerId: Int, boardWidth: Int, boardHeight: Int) extends Strategy {
-  override def moves(board: Seq[Int], yourAnts: Seq[Ant]): Seq[Move] = {
+class GoToNotOwn(boardWidth: Int, boardHeight: Int) extends Strategy {
+  override def moves(myPlayerId: Int, board: Seq[Int], yourAnts: Seq[Ant]): Seq[Move] = {
     val betterBoard = board.grouped(boardHeight).map(_.toIndexedSeq).toIndexedSeq
 
     yourAnts.map { ant =>
       val possibleGoals = for {
         x <- Random.shuffle(normalizeX(ant.x - 1) to normalizeX(ant.x + 1))
         y <- Random.shuffle(normalizeY(ant.y - 1) to normalizeY(ant.y + 1))
-        if betterBoard(x)(y) != playerId
+        if betterBoard(x)(y) != myPlayerId
       } yield (x, y)
 
       val finalGoal = possibleGoals.headOption.getOrElse {
