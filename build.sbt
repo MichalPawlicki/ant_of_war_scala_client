@@ -1,7 +1,9 @@
 import sbt.Keys.version
 
 lazy val dependencies = Seq(
+  "ch.qos.logback" % "logback-classic" % "1.1.7",
   "com.typesafe.akka" %% "akka-http" % "10.0.6",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.5.0",
   "org.json4s" %% "json4s-native" % "3.5.2"
 )
 

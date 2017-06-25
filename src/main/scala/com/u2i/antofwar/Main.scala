@@ -2,6 +2,7 @@ package com.u2i.antofwar
 
 import akka.actor.ActorSystem
 import akka.stream._
+import com.u2i.antofwar.game.Game
 import com.u2i.antofwar.strategies.{CompletelyRandom, GoToNotOwn}
 
 object Main extends App {
@@ -16,7 +17,7 @@ object Main extends App {
     case _ => new GoToNotOwn(40, 40)
   }
 
-  val gameFinishedFuture = Game.play("ws://localhost:4001/socket/websocket", strategy)
+  val gameFinishedFuture = Game.play("ws://localhost:4000/socket/websocket", strategy)
 
   gameFinishedFuture.onComplete { triedDone =>
     println(s"Stream terminated with: $triedDone")
