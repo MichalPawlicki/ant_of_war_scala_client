@@ -1,10 +1,10 @@
 package com.u2i.antofwar.game
 
-import com.u2i.antofwar.model.Ant
+import com.u2i.antofwar.model.{Ant, Board}
 
-case class BoardState(myPlayerId: Int, board: IndexedSeq[Int], allAnts: Seq[Ant], foodByPlayerId: Map[Int, Int]) {
+case class BoardState(myPlayerId: Int, board: Board, allAnts: Seq[Ant], foodByPlayerId: Map[Int, Int]) {
   lazy val myAnts: Seq[Ant] = allAnts.filter(_.player == myPlayerId)
   lazy val myFood: Int = foodByPlayerId(myPlayerId)
-
-  //  lazy val board2D =
+  lazy val width: Int = board.size.width
+  lazy val height: Int = board.size.height
 }

@@ -5,14 +5,14 @@ import akka.stream.scaladsl.{Flow, Keep, Source}
 import akka.{Done, NotUsed}
 import com.typesafe.scalalogging.Logger
 import com.u2i.antofwar.Strategy
-import com.u2i.antofwar.model.Ant
+import com.u2i.antofwar.model.{Ant, Board, BoardSize}
 import com.u2i.antofwar.phoenix.{Codecs, PhoenixMessage}
 import org.json4s.JsonAST.{JObject, JValue}
 import org.json4s.JsonDSL._
 
 import scala.concurrent.Future
 
-class Protocol(strategy: Strategy) {
+class Protocol(strategy: Strategy, boardSize: BoardSize) {
   private implicit val formats = org.json4s.DefaultFormats
   private val topic = "observer:lobby"
   private val logger = Logger[Protocol]
@@ -28,7 +28,8 @@ class Protocol(strategy: Strategy) {
       case (numString, food) => (numString.toInt, food)
     }
     val ants = (payload \ "ants").extract[Seq[Ant]]
-    val board = (payload \ "board").extract[IndexedSeq[Int]]
+    val boardSeq = (payload \ "board").extract[IndexedSeq[Int]]
+    val board = Board(boardSeq, boardSize)
     val boardState = BoardState(playerId, board, ants, foodByPlayer)
     val moveActionJsons =
       strategy

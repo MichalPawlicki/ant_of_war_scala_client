@@ -8,15 +8,16 @@ import akka.http.scaladsl.model.ws.{Message, WebSocketRequest}
 import akka.stream.Materializer
 import akka.stream.scaladsl.Flow
 import com.u2i.antofwar.Strategy
+import com.u2i.antofwar.model.BoardSize
 
 import scala.concurrent.Future
 
 object Game {
-  def play(serverUrl: String, strategy: Strategy)
+  def play(serverUrl: String, strategy: Strategy, boardSize: BoardSize)
           (implicit system: ActorSystem, materializer: Materializer): Future[Done] = {
     import system.dispatcher
 
-    val gameProtocol = new Protocol(strategy)
+    val gameProtocol = new Protocol(strategy, boardSize)
     val flow: Flow[Message, Message, Future[Done]] = gameProtocol.flow
 
     // upgradeResponse is a Future[WebSocketUpgradeResponse] that

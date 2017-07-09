@@ -6,16 +6,16 @@ import com.u2i.antofwar.model.{Move, Point}
 
 import scala.util.Random
 
-class CompletelyRandom(boardWidth: Int, boardHeight: Int) extends Strategy with Spawning {
+class CompletelyRandom extends Strategy with Spawning {
   override def moves(boardState: BoardState): Seq[Move] = {
+    val (width, height) = (boardState.width, boardState.height)
+
     boardState.myAnts.map { ant =>
-      val newX = normalize(ant.x + Random.nextInt(3) - 1, 0, boardWidth - 1)
-      val newY = normalize(ant.y + Random.nextInt(3) - 1, 0, boardHeight - 1)
+      val newX = normalize(ant.x + Random.nextInt(3) - 1, 0, width - 1)
+      val newY = normalize(ant.y + Random.nextInt(3) - 1, 0, height - 1)
       Move(ant.id, Point(newX, newY))
     }
   }
 
   private def normalize(num: Int, min: Int, max: Int): Int = Math.min(max, Math.max(min, num))
-
-  override def shouldSpawn(boardState: BoardState): Boolean = shouldSpawn(boardState, boardWidth, boardHeight)
 }
