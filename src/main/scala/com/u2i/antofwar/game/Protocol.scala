@@ -28,13 +28,13 @@ class Protocol(strategy: Strategy) {
       case (numString, food) => (numString.toInt, food)
     }
     val ants = (payload \ "ants").extract[Seq[Ant]]
-    val board = (payload \ "board").extract[Seq[Int]]
+    val board = (payload \ "board").extract[IndexedSeq[Int]]
     val boardState = BoardState(playerId, board, ants, foodByPlayer)
     val moveActionJsons =
       strategy
         .moves(boardState)
         .map { move =>
-          ("cmd" -> "move") ~ ("id" -> move.id) ~ ("to" -> Seq(move.to._1, move.to._2))
+          ("cmd" -> "move") ~ ("id" -> move.id) ~ ("to" -> move.to.toSeq)
         }
     val spawnActionJsons =
       if (strategy.shouldSpawn(boardState)) Some(("cmd" -> "spawn") ~ ("player_id" -> playerId))

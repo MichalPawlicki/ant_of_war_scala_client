@@ -8,7 +8,7 @@ trait Spawning {
     val spawnPoint = findSpawnPoint(boardState.myPlayerId, boardWidth, boardHeight)
 
     boardState.myAnts
-      .find(ant => ant.x == spawnPoint.x && ant.y == spawnPoint.y)
+      .find(_.position == spawnPoint)
       .forall(_ => false)
   }
 
