@@ -36,9 +36,9 @@ class Protocol(strategy: Strategy) {
         .map { move =>
           ("cmd" -> "move") ~ ("id" -> move.id) ~ ("to" -> Seq(move.to._1, move.to._2))
         }
-    val spawnActionJsons = strategy.shouldSpawn(boardState).map { _ =>
-      ("cmd" -> "spawn") ~ ("player_id" -> playerId)
-    }
+    val spawnActionJsons =
+      if (strategy.shouldSpawn(boardState)) Some(("cmd" -> "spawn") ~ ("player_id" -> playerId))
+      else None
     val actionJsons = moveActionJsons ++ spawnActionJsons
     List(PhoenixMessage(
       topic = topic,

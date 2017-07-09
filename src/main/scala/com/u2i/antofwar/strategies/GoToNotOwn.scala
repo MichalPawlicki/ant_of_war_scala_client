@@ -3,7 +3,6 @@ package com.u2i.antofwar.strategies
 import com.u2i.antofwar.Strategy
 import com.u2i.antofwar.game.BoardState
 import com.u2i.antofwar.model.Move
-import com.u2i.antofwar.model.Spawn.ShouldSpawn
 
 import scala.util.Random
 
@@ -32,5 +31,5 @@ class GoToNotOwn(boardWidth: Int, boardHeight: Int) extends Strategy with Spawni
 
   private def normalizeY(num: Int): Int = Math.min(boardHeight - 1, Math.max(0, num))
 
-  override def shouldSpawn(boardState: BoardState): ShouldSpawn = shouldSpawn(boardState, boardWidth, boardHeight)
+  override def shouldSpawn(boardState: BoardState): Boolean = shouldSpawn(boardState, boardWidth, boardHeight)
 }

@@ -1,17 +1,15 @@
 package com.u2i.antofwar.strategies
 
 import com.u2i.antofwar.game.BoardState
-import com.u2i.antofwar.model.{Point, Spawn}
-import com.u2i.antofwar.model.Spawn.ShouldSpawn
+import com.u2i.antofwar.model.Point
 
 trait Spawning {
-  def shouldSpawn(boardState: BoardState, boardWidth: Int, boardHeight: Int): ShouldSpawn = {
+  def shouldSpawn(boardState: BoardState, boardWidth: Int, boardHeight: Int): Boolean = {
     val spawnPoint = findSpawnPoint(boardState.myPlayerId, boardWidth, boardHeight)
 
     boardState.myAnts
       .find(ant => ant.x == spawnPoint.x && ant.y == spawnPoint.y)
-      .map(_ => Spawn.no)
-      .getOrElse(Spawn.yes)
+      .forall(_ => false)
   }
 
   private def findSpawnPoint(myPlayerId: Int, boardWidth: Int, boardHeight: Int): Point = myPlayerId match {
