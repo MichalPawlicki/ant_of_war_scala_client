@@ -37,8 +37,13 @@ strategy-name = doNothing
   }
 ```
 3. Launch `sbt` from a terminal:
+
 `$ sbt`
+
 4. Compile your code before joining the game:
+
 `> compile`
-5. Run the client and join the game:
+
+5. Run the client to join the game:
+
 `> run`
