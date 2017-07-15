@@ -6,7 +6,7 @@ import akka.stream.scaladsl.{BidiFlow, Flow}
 import com.typesafe.scalalogging.Logger
 import org.json4s.JValue
 import org.json4s.JsonDSL._
-import org.json4s.native.JsonMethods.{compact, parse, pretty, render}
+import org.json4s.native.JsonMethods.{compact, parse, render}
 
 object Codecs {
   private implicit val formats = org.json4s.DefaultFormats
@@ -17,11 +17,7 @@ object Codecs {
     unpackMessage,
     Flow[String].map(TextMessage.Strict))
   private lazy val jsonCodec: BidiFlow[String, JValue, JValue, String, NotUsed] = BidiFlow.fromFunctions[String, JValue, JValue, String](
-    string => {
-      val j = parse(string)
-      logger.info(pretty(render(j)))
-      j
-    },
+    string => parse(string),
     jValue => compact(render(jValue)))
   private lazy val jsonToPhoenixMessageCodec: BidiFlow[JValue, PhoenixMessage, PhoenixMessage, JValue, NotUsed] = BidiFlow.fromFunctions[JValue, PhoenixMessage, PhoenixMessage, JValue](
     jValue => PhoenixMessage(
