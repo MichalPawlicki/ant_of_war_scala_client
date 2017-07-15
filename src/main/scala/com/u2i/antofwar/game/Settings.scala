@@ -4,5 +4,5 @@ import com.typesafe.config.Config
 
 class Settings(config: Config) {
   val serverUrl: String = config.getString("server-url")
-  val strategyName: String = config.getString("strategy-name")
+  def strategyName: String = config.getString("strategy-name")
 }
