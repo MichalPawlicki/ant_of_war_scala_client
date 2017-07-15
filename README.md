@@ -27,7 +27,7 @@ Methods `moves` and `shouldSpawn` are invoked in each turn and are passed the cu
 server-url = "ws://localhost:4000/socket/websocket"
 strategy-name = doNothing
 ```
-2. Instantiate your strategy in the `Main` object. If you provided the strategy name in `application.conf`, you can use it to determine which strategy to use:
+2. Instantiate your strategy in the `Main` object. If you configure a name in `application.conf`, you can use it to choose the strategy:
 ```scala
   val config = ConfigFactory.load()
   val settings = new Settings(config)
